@@ -11,3 +11,9 @@ Build it With Agentic Ai
 showcase build 
 out interface infastructure
 in symbian Mobile Os 
+
+
+---------
+
+the technology have a
+2,6 billion dollar value
