@@ -1,0 +1,119 @@
+```html
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symbian & Mac Hybrid Social OS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --symbian-bg: #2b2e31; --mac-bg: rgba(20, 20, 20, 0.85); }
+        body { background-color: #050505; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        
+        .mobile-shell { width: 340px; height: 680px; border: 10px solid #1a1a1a; border-radius: 45px; background-color: var(--symbian-bg); position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 0 60px rgba(0,0,0,0.9); }
+        .status-bar { font-size: 11px; color: #ccc; padding: 12px 25px; display: flex; justify-content: space-between; font-weight: bold; position: relative; z-index: 2; }
+        
+        /* Rain Canvas */
+        #rainCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0.2; }
+        
+        .browser-wrapper { flex-grow: 1; background: var(--mac-bg); backdrop-filter: blur(15px); border-radius: 25px 25px 0 0; margin-top: 15px; display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 2; }
+        .browser-header { background: rgba(50, 50, 50, 0.4); padding: 10px 15px; display: flex; align-items: center; gap: 12px; }
+        .traffic-lights { display: flex; gap: 7px; }
+        .dot { width: 11px; height: 11px; border-radius: 50%; }
+        
+        .feed-container { flex-grow: 1; overflow-y: auto; padding: 20px; }
+        
+        /* Integrated IDE Styling */
+        .glass-code-wrapper { background: rgba(39, 40, 34, 0.8); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 10px; margin-bottom: 25px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+        .ide-grid { display: grid; grid-template-columns: 40px 1fr; gap: 10px; }
+        .lib-icons { display: flex; flex-direction: column; gap: 8px; align-items: center; padding-top: 5px; }
+        .icon-box { width: 30px; height: 30px; background: rgba(255,255,255,0.1); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; }
+        
+        .editor-container { display: flex; font-family: 'Consolas', 'Monaco', monospace; font-size: 9px; line-height: 1.4; color: #f8f8f2; background: #121212; padding: 5px; border-radius: 6px; }
+        .line-numbers { color: #666; text-align: right; padding-right: 8px; user-select: none; }
+        .code-content { padding-left: 8px; flex-grow: 1; white-space: pre; }
+        
+        .build-bar { margin-top: 10px; font-size: 9px; display: flex; flex-direction: column; color: #888; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 5px; gap: 5px; }
+        .live-preview { background: #007bff; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-align: center; cursor: pointer; }
+        .parser-status { font-family: monospace; color: #ffde57; }
+        
+        .keyword { color: #f92672; }
+        .func { color: #a6e22e; }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-shell">
+        <canvas id="rainCanvas"></canvas>
+        <div class="status-bar">
+            <span>OLESSIALL BUILD</span>
+            <span>ACTIVE</span>
+        </div>
+
+        <div class="browser-wrapper">
+            <div class="browser-header">
+                <div class="traffic-lights"><div class="dot bg-danger"></div><div class="dot bg-warning"></div><div class="dot bg-success"></div></div>
+                <div class="bg-dark rounded px-3 py-1 flex-grow-1 small text-secondary">AgentAi://CoderPanel</div>
+            </div>
+
+            <div class="feed-container" id="feed">
+                <div id="posts"></div>
+            </div>
+        </div>
+
+        <div class="nav-bar bg-black d-flex justify-content-around align-items-center" style="height: 60px; position: relative; z-index: 2;">
+            <div class="text-primary small">SYMBIAN</div>
+            <div class="text-white small">MAC-IDE</div>
+            <div class="text-secondary small">EXIT</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('rainCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 340; canvas.height = 680;
+        const drops = Array(Math.floor(canvas.width / 10)).fill(0);
+
+        function drawRain() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0f0';
+            ctx.font = '10px monospace';
+            drops.forEach((y, i) => {
+                const text = String.fromCharCode(Math.random() * 128);
+                ctx.fillText(text, i * 10, y);
+                drops[i] = y > canvas.height || Math.random() > 0.97 ? 0 : y + 10;
+            });
+        }
+        setInterval(drawRain, 50);
+
+        const postsContainer = document.getElementById('posts');
+        const langs = ['cpp', 'py', 'kt', 'js'];
+        const connections = ['CLAUDE', 'OLLAMA', 'CLUSTER', 'AGENT'];
+        const icons = { cpp: '⚙️', py: '🐍', kt: '☕', js: '🌐' };
+
+        postsContainer.innerHTML = langs.map((l, i) => `
+            <div class="glass-code-wrapper">
+                <div class="ide-grid">
+                    <div class="lib-icons">
+                        <div class="icon-box" title="${connections[i]}">${icons[l]}</div>
+                        <div class="icon-box" title="Connected">⚡</div>
+                    </div>
+                    <div class="editor-container">
+                        <div class="line-numbers">1\n2\n3\n4\n5</div>
+                        <div class="code-content"><span class="keyword">import</span> ${connections[i]};\n<span class="keyword">function</span> <span class="func">link</span>() {\n  <span class="keyword">return</span> init();\n}\n<span class="keyword">return</span> active;</div>
+                    </div>
+                </div>
+                <div class="build-bar">
+                    <div class="d-flex justify-content-between">
+                        <span>Sync: <span class="parser-status">ONLINE</span></span>
+                        <span>Node: ${connections[i]}</span>
+                    </div>
+                    <div class="live-preview">EXECUTE: ${connections[i]}</div>
+                </div>
+            </div>
+        `).join('');
+    </script>
+</body>
+</html>
+
